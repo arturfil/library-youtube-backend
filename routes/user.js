@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 
 const User = require('../models/User');
+const { generateJwt } = require('../helpers/processJwt');
 
 router.get("/", async (req, res) => {
     const users = await User.find();
@@ -40,8 +41,8 @@ router.post("/login", async (req, res) => {
     if (!validPassword) {
         return res.status(500).json({message: "Please check credentials"});
     }
-    // generate Jwt TODO:
-    return res.status(200).json(user);
+    const token = await generateJwt(user._id);
+    return res.status(200).json({token, user});
 })
 
 
